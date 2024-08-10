@@ -65,6 +65,22 @@ jobs:
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
+         echo "QT_INSTALL_DIR=$(pwd)/qt-install" >> $GITHUB_ENV
+
+    - name: Install Libclang from Qt
+      shell: bash
+      run: |
+         curl https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
+         7z x libclang.7z -olibclang
+         echo "LLVM_INSTALL_DIR=$(pwd)/libclang" >> $GITHUB_ENV
+         echo "$(pwd)/libclang/bin" >> $GITHUB_PATH
+
+    - name: Checkout PySide
+      shell: bash
+      run: |
+          git clone --branch 6.6.3.1 https://code.qt.io/pyside/pyside-setup.git pyside
+          cd pyside
+          git submodule update --init --recursive
       
     - name: Archive DLL
       uses: actions/upload-artifact@v4
