@@ -1,0 +1,62 @@
+name: MSBuild
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action
+    
+    - name: Checkout Python
+      shell: bash
+      run: |
+         git clone --branch v3.12.5 https://github.com/python/cpython.git
+    
+    - name: Build Python
+      shell: bash
+      run: |
+        cd cpython
+        ./PCBuild/build.bat -p x64 -d -e
+        echo "python=$(pwd)/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
+        echo "python_artifacts=$(pwd)/PCBuild/amd64" >> $GITHUB_ENV
+    
+    - name: Checkout Qt
+      shell: bash
+      run: |
+         git clone --branch 6.6.3 https://github.com/qtproject/qt5.git qt
+         cd qt
+         git submodule init qtbase qtdeclarative
+         git submodule update
+    
+    - name: Build Qt
+      shell: bash
+      run: |
+         mkdir qt-build
+         cd qt-build
+         ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
+         cmake --build . --parallel
+         cmake --install .
+      
+    - name: Archive DLL
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-dll
+        path: Output/winmm.dll
