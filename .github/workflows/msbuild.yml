@@ -81,7 +81,15 @@ jobs:
           git clone --branch 6.6.3.1 https://code.qt.io/pyside/pyside-setup.git pyside
           cd pyside
           git submodule update --init --recursive
-      
+
+    - name: Pyside venv
+      shell: bash
+      run: |
+          ${{ env.python }} -m venv pyside_venv
+          echo "python=$(pwd)/pyside_venv/bin/python_d" >> $GITHUB_ENV
+          
+
+
     - name: Archive DLL
       uses: actions/upload-artifact@v4
       with:
