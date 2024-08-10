@@ -60,6 +60,8 @@ jobs:
       run: |
          mkdir qt-build
          cd qt-build
+         set CXX=sccache $CXX
+         set CC=sccache $CC
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
