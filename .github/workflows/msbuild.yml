@@ -70,7 +70,7 @@ jobs:
     - name: Install Libclang from Qt
       shell: bash
       run: |
-         curl https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
+         curl -L https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
          7z x libclang.7z -olibclang
          echo "LLVM_INSTALL_DIR=$(pwd)/libclang" >> $GITHUB_ENV
          echo "$(pwd)/libclang/bin" >> $GITHUB_PATH
