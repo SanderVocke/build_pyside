@@ -23,7 +23,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action
+      uses: mozilla-actions/sccache-action@v0.0.5
     
     - name: Checkout Python
       shell: bash
