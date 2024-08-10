@@ -89,6 +89,12 @@ jobs:
           echo "python=$(pwd)/pyside_venv/bin/python_d" >> $GITHUB_ENV
           
 
+    - name: Build PySide
+      shell: bash
+      run: |
+          cd pyside
+          ${{ env.python }} -m pip install -r requirements.txt
+          ${{ env.python }} setup.py build --qtpaths=$QT_INSTALL_DIR/bin/qtpaths --ignore-git --parallel=4
 
     - name: Archive DLL
       uses: actions/upload-artifact@v4
