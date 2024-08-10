@@ -12,6 +12,8 @@ permissions:
 
 env:
   SCCACHE_GHA_ENABLED: "true"
+  CMAKE_CXX_COMPILER_LAUNCHER: sccache
+  CMAKE_C_COMPILER_LAUNCHER: sccache
 
 jobs:
   build:
@@ -23,9 +25,10 @@ jobs:
       with:
         submodules: true
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
+    - uses: TheMrMilchmann/setup-msvc-dev@v3
+      with:
+        arch: x64
+  
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.5
     
@@ -38,6 +41,8 @@ jobs:
       shell: bash
       run: |
         cd cpython
+        set CXX=sccache $CXX
+        set CC=sccache $CC
         ./PCBuild/build.bat -p x64 -d -e
         echo "python=$(pwd)/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
         echo "python_artifacts=$(pwd)/PCBuild/amd64" >> $GITHUB_ENV
