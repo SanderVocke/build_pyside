@@ -86,15 +86,15 @@ jobs:
       shell: bash
       run: |
           ${{ env.python }} -m venv pyside_venv
-          echo "python=$(pwd)/pyside_venv/bin/python_d" >> $GITHUB_ENV
+          echo "python_in_venv=$(pwd)/pyside_venv/Scripts/python_d.exe" >> $GITHUB_ENV
           
 
     - name: Build PySide
       shell: bash
       run: |
           cd pyside
-          ${{ env.python }} -m pip install -r requirements.txt
-          ${{ env.python }} setup.py build --qtpaths=$QT_INSTALL_DIR/bin/qtpaths --ignore-git --parallel=4
+          ${{ env.python_in_venv }} -m pip install -r requirements.txt
+          ${{ env.python_in_venv }} setup.py build --qtpaths=$QT_INSTALL_DIR/bin/qtpaths --ignore-git --parallel=4
 
     - name: Archive DLL
       uses: actions/upload-artifact@v4
