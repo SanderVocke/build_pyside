@@ -60,8 +60,8 @@ jobs:
       run: |
          mkdir qt-build
          cd qt-build
-         $Env:CXX="sccache $Env:CXX"
-         $Env:CC="sccache $Env:CC"
+         #$Env:CXX="sccache $Env:CXX"
+         #$Env:CC="sccache $Env:CC"
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
