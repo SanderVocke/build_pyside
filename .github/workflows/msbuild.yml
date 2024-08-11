@@ -38,11 +38,11 @@ jobs:
          git clone --branch v3.12.5 https://github.com/python/cpython.git
     
     - name: Build Python
-      shell: bash
+      shell: pwsh
       run: |
         cd cpython
-        set CXX=sccache $CXX
-        set CC=sccache $CC
+        $Env:CXX="sccache $Env:CXX"
+        $Env:CC="sccache $Env:CC"
         ./PCBuild/build.bat -p x64 -d -e
         echo "python=$(pwd)/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
         echo "python_artifacts=$(pwd)/PCBuild/amd64" >> $GITHUB_ENV
