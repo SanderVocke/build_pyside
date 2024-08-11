@@ -65,7 +65,7 @@ jobs:
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
-         echo "QT_INSTALL_DIR=$(pwd)/qt-install" >> $GITHUB_ENV
+         echo "QT_INSTALL_DIR=${{ github.workspace }}/qt-install" >> $GITHUB_ENV
 
     - name: Install Libclang from Qt
       shell: bash
