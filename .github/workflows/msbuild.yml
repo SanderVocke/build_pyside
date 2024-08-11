@@ -77,8 +77,8 @@ jobs:
       run: |
          curl -L https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
          7z x libclang.7z -olibclang
-         "LLVM_INSTALL_DIR={{ github.workspace }}/libclang" | Out-File -FilePath $env:GITHUB_ENV -Append 
-         "{{ github.workspace }}/libclang/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+         "LLVM_INSTALL_DIR=${{ github.workspace }}/libclang" | Out-File -FilePath $env:GITHUB_ENV -Append 
+         "${{ github.workspace }}/libclang/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
     - name: Checkout PySide
       shell: pwsh
@@ -91,7 +91,7 @@ jobs:
       shell: pwsh
       run: |
           ${{ env.python }} -m venv pyside_venv
-          "python_in_venv={{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "python_in_venv=${{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
           
 
     - name: Build PySide
