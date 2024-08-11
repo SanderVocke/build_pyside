@@ -69,7 +69,7 @@ jobs:
 
     - name: find
       shell: pwsh
-      run |
+      run: |
          Get-ChildItem -Path . -Filter "qtpaths.exe" -Recurse
 
     - name: Install Libclang from Qt
