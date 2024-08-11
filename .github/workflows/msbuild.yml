@@ -33,7 +33,7 @@ jobs:
       uses: mozilla-actions/sccache-action@v0.0.5
     
     - name: Checkout Python
-      shell: bash
+      shell: pwsh
       run: |
          git clone --branch v3.12.5 https://github.com/python/cpython.git
     
@@ -44,11 +44,11 @@ jobs:
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
         ./PCBuild/build.bat -p x64 -d -e
-        echo "python=$(pwd)/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
-        echo "python_artifacts=$(pwd)/PCBuild/amd64" >> $GITHUB_ENV
+        echo "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
+        echo "python_artifacts=${{ github.workspace }}/cpython/PCBuild/amd64" >> $GITHUB_ENV
     
     - name: Checkout Qt
-      shell: bash
+      shell: pwsh
       run: |
          git clone --branch 6.6.3 https://github.com/qtproject/qt5.git qt
          cd qt
@@ -56,12 +56,12 @@ jobs:
          git submodule update
     
     - name: Build Qt
-      shell: bash
+      shell: pwsh
       run: |
          mkdir qt-build
          cd qt-build
-         set CXX=sccache $CXX
-         set CC=sccache $CC
+         $Env:CXX="sccache $Env:CXX"
+         $Env:CC="sccache $Env:CC"
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
@@ -73,29 +73,29 @@ jobs:
          Get-ChildItem -Path . -Filter "qtpaths.exe" -Recurse
 
     - name: Install Libclang from Qt
-      shell: bash
+      shell: pwsh
       run: |
          curl -L https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
          7z x libclang.7z -olibclang
-         echo "LLVM_INSTALL_DIR=$(pwd)/libclang" >> $GITHUB_ENV
-         echo "$(pwd)/libclang/bin" >> $GITHUB_PATH
+         echo "LLVM_INSTALL_DIR={{ github.workspace }}/libclang" >> $GITHUB_ENV
+         echo "{{ github.workspace }}/libclang/bin" >> $GITHUB_PATH
 
     - name: Checkout PySide
-      shell: bash
+      shell: pwsh
       run: |
           git clone --branch 6.6.3.1 https://code.qt.io/pyside/pyside-setup.git pyside
           cd pyside
           git submodule update --init --recursive
 
     - name: Pyside venv
-      shell: bash
+      shell: pwsh
       run: |
           ${{ env.python }} -m venv pyside_venv
-          echo "python_in_venv=$(pwd)/pyside_venv/Scripts/python_d.exe" >> $GITHUB_ENV
+          echo "python_in_venv={{ github.workspace }}/pyside_venv/Scripts/python_d.exe" >> $GITHUB_ENV
           
 
     - name: Build PySide
-      shell: bash
+      shell: pwsh
       run: |
           cd pyside
           ${{ env.python_in_venv }} -m pip install -r requirements.txt
