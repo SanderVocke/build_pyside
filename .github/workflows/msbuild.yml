@@ -16,7 +16,7 @@ env:
   CMAKE_C_COMPILER_LAUNCHER: sccache
 
 jobs:
-  build:
+  build: 
     runs-on: windows-latest
 
     steps:
@@ -44,8 +44,8 @@ jobs:
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
         ./PCBuild/build.bat -p x64 -d -e
-        echo "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" >> $GITHUB_ENV
-        echo "python_artifacts=${{ github.workspace }}/cpython/PCBuild/amd64" >> $GITHUB_ENV
+        "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+        "python_artifacts=${{ github.workspace }}/cpython/PCBuild/amd64" | Out-File -FilePath $env:GITHUB_ENV -Append
     
     - name: Checkout Qt
       shell: pwsh
@@ -65,7 +65,7 @@ jobs:
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
-         echo "QT_INSTALL_DIR=${{ github.workspace }}/qt-install" >> $GITHUB_ENV
+         "QT_INSTALL_DIR=${{ github.workspace }}/qt-install" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: find
       shell: pwsh
@@ -77,8 +77,8 @@ jobs:
       run: |
          curl -L https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
          7z x libclang.7z -olibclang
-         echo "LLVM_INSTALL_DIR={{ github.workspace }}/libclang" >> $GITHUB_ENV
-         echo "{{ github.workspace }}/libclang/bin" >> $GITHUB_PATH
+         "LLVM_INSTALL_DIR={{ github.workspace }}/libclang" | Out-File -FilePath $env:GITHUB_ENV -Append 
+         "{{ github.workspace }}/libclang/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
     - name: Checkout PySide
       shell: pwsh
@@ -91,7 +91,7 @@ jobs:
       shell: pwsh
       run: |
           ${{ env.python }} -m venv pyside_venv
-          echo "python_in_venv={{ github.workspace }}/pyside_venv/Scripts/python_d.exe" >> $GITHUB_ENV
+          "python_in_venv={{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
           
 
     - name: Build PySide
