@@ -65,7 +65,7 @@ jobs:
          ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
-         "QT_INSTALL_DIR=${{ github.workspace }}/qt-install" | Out-File -FilePath $env:GITHUB_ENV -Append
+         "qt_install=${{ github.workspace }}/qt-install" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: find
       shell: pwsh
@@ -99,7 +99,7 @@ jobs:
       run: |
           cd pyside
           ${{ env.python_in_venv }} -m pip install -r requirements.txt
-          ${{ env.python_in_venv }} setup.py build --qtpaths=$QT_INSTALL_DIR/bin/qtpaths --ignore-git --parallel=4
+          ${{ env.python_in_venv }} setup.py build --qtpaths=${{ env.qt_install }}/bin/qtpaths --ignore-git --parallel=4
 
     - name: Archive DLL
       uses: actions/upload-artifact@v4
