@@ -45,6 +45,11 @@ jobs:
         $Env:CC="sccache $Env:CC"
         exit 1
         ./PCBuild/build.bat -p x64 -d -e
+        ./PCBuild/amd64/python_d.exe -m ensurepip
+        cd Doc
+        ./PCBuild/amd64/python_d.exe -m pip install -r ./requirements.txt
+        make html
+        cd ..
         ./Tools/msi/get_externals.bat
         ./Tools/msi/build.bat -x64
         "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
