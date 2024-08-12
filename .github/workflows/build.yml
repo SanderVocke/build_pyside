@@ -99,7 +99,7 @@ jobs:
       run: |
           cd pyside
           ${{ env.python_in_venv }} -m pip install -r requirements.txt
-          ${{ env.python_in_venv }} setup.py build --qtpaths=${{ env.qt_install }}/bin/qtpaths.exe --ignore-git --parallel=4
+          ${{ env.python_in_venv }} setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4
 
     - name: Setup tmate session
       if: failure()
