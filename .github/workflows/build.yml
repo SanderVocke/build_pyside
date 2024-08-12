@@ -43,7 +43,6 @@ jobs:
         cd cpython
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
-        exit 1
         ./PCBuild/build.bat -p x64 -d -e
         ./PCBuild/amd64/python_d.exe -m ensurepip
         cd Doc
