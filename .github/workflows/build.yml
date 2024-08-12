@@ -46,7 +46,7 @@ jobs:
         ./PCBuild/build.bat -p x64 -d -e
         ./PCBuild/amd64/python_d.exe -m ensurepip
         cd Doc
-        ./PCBuild/amd64/python_d.exe -m pip install -r ./requirements.txt
+        ../PCBuild/amd64/python_d.exe -m pip install -r ./requirements.txt
         make html
         cd ..
         ./Tools/msi/get_externals.bat
