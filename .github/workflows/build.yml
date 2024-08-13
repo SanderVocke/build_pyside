@@ -56,9 +56,7 @@ jobs:
       run: |
         cd cpython/Doc
         ${{ env.python }} -m pip install -r ./requirements.txt
-        make venv
-        ./venv/Scripts/Activate.ps1
-        make html
+        make PYTHON=${{ env.python }} html
 
     - name: Build Python MSI
       shell: pwsh
