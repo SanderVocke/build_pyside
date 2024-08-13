@@ -57,7 +57,7 @@ jobs:
         exit 1
 
     - name: Restore Qt from cache
-      if: ${{ env.qt_from_cache == "true" }}
+      if: env.qt_from_cache == 'true'
       id: cache-qt
       uses: actions/cache/restore@v4
       with:
@@ -65,7 +65,7 @@ jobs:
         key: ${{ runner.os }}-qt-install
 
     - name: Checkout Qt
-      if: steps.cache-qt.outputs.cache_hit != "true"
+      if: steps.cache-qt.outputs.cache_hit != 'true'
       shell: pwsh
       run: |
          git clone --branch 6.6.3 https://github.com/qtproject/qt5.git qt
@@ -75,7 +75,7 @@ jobs:
 
     - name: Build Qt
       shell: pwsh
-      if: steps.cache-qt.outputs.cache_hit != "true"
+      if: steps.cache-qt.outputs.cache_hit != 'true'
       run: |
          mkdir qt-build
          cd qt-build
@@ -86,7 +86,7 @@ jobs:
          cmake --install .
 
     - name: Save Qt cache
-      if: steps.cache-qt.outputs.cache_hit != "true"
+      if: steps.cache-qt.outputs.cache_hit != 'true'
       id: cache-qt
       uses: actions/cache/restore@v4
       with:
