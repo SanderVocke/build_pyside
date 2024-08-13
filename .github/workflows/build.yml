@@ -87,7 +87,6 @@ jobs:
 
     - name: Save Qt cache
       if: steps.cache-qt.outputs.cache_hit != 'true'
-      id: cache-qt
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.qt_install }}
