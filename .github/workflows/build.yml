@@ -70,7 +70,7 @@ jobs:
 
     - name: Save Python binaries cache
       if: steps.cache-python-binaries.outputs.cache_hit != 'true'
-      uses: actions/cache/restore@v4
+      uses: actions/cache/save@v4
       with:
         path: cpython/PCbuild/amd64
         key: ${{ runner.os }}-python-binaries
@@ -99,7 +99,7 @@ jobs:
 
     - name: Save Python docs cache
       if: steps.cache-python-docs.outputs.cache_hit != 'true'
-      uses: actions/cache/restore@v4
+      uses: actions/cache/save@v4
       with:
         path: cpython/Docs/build
         key: ${{ runner.os }}-python-docs
@@ -161,7 +161,7 @@ jobs:
 
     - name: Save Qt cache
       if: steps.cache-qt.outputs.cache_hit != 'true'
-      uses: actions/cache/restore@v4
+      uses: actions/cache/save@v4
       with:
         path: ${{ env.qt_install }}
         key: ${{ runner.os }}-qt-install
