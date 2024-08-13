@@ -15,6 +15,8 @@ env:
   CMAKE_CXX_COMPILER_LAUNCHER: sccache
   CMAKE_C_COMPILER_LAUNCHER: sccache
   qt_from_cache: "true"
+  python_binaries_from_cache: "true"
+  python_docs_from_cache: "true"
 
 jobs:
   build:
@@ -41,23 +43,72 @@ jobs:
       run: |
          git clone --branch v3.12.5 https://github.com/python/cpython.git
 
-    - name: Build Python
+
+
+
+
+
+
+    - name: Restore Python binaries from cache
+      if: env.python_binaries_from_cache == 'true'
+      id: cache-python-binaries
+      uses: actions/cache/restore@v4
+      with:
+        path: cpython/PCbuild/amd64
+        key: ${{ runner.os }}-python-binaries
+
+    - name: Build Python binaries
+      if: steps.cache-python-binaries.outputs.cache_hit != 'true'
       shell: pwsh
       run: |
         cd cpython
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
-        ./PCBuild/build.bat -p x64 -d -e
-        ./PCBuild/amd64/python_d.exe -m ensurepip
-        "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+        ./PCbuild/build.bat -p x64 -d -e
+        ./PCbuild/amd64/python_d.exe -m ensurepip
+        "python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Save Python binaries cache
+      if: steps.cache-python-binaries.outputs.cache_hit != 'true'
+      uses: actions/cache/restore@v4
+      with:
+        path: cpython/PCbuild/amd64
+        key: ${{ runner.os }}-python-binaries
+
+
+
+
+
+
+    - name: Restore Python docs from cache
+      if: env.python_docs_from_cache == 'true'
+      id: cache-python-docs
+      uses: actions/cache/restore@v4
+      with:
+        path: cpython/Docs/build
+        key: ${{ runner.os }}-python-docs
 
     - name: Build Python docs
+      if: steps.cache-python-docs.outputs.cache_hit != 'true'
       shell: bash
       run: |
         PYTHON=$(cygpath -u '${{ env.python }}')
         cd cpython/Doc
         $PYTHON -m pip install -r ./requirements.txt
         make PYTHON=$PYTHON BLURB="$PYTHON -m blurb" SPHINXBUILD="$PYTHON -m sphinx" html
+
+    - name: Save Python docs cache
+      if: steps.cache-python-docs.outputs.cache_hit != 'true'
+      uses: actions/cache/restore@v4
+      with:
+        path: cpython/Docs/build
+        key: ${{ runner.os }}-python-docs
+
+
+
+
+
+
 
     - name: Build Python MSI
       shell: pwsh
