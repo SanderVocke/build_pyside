@@ -33,6 +33,9 @@ jobs:
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.5
 
+    - name: Install WiX
+      run: dotnet tool install --global wix
+
     - name: Checkout Python
       shell: pwsh
       run: |
@@ -46,15 +49,21 @@ jobs:
         $Env:CC="sccache $Env:CC"
         ./PCBuild/build.bat -p x64 -d -e
         ./PCBuild/amd64/python_d.exe -m ensurepip
-        cd Doc
-        ../PCBuild/amd64/python_d.exe -m pip install -r ./requirements.txt
+        "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Build Python docs
+      shell: pwsh
+      run: |
+        cd cpython/Doc
+        ${{ env.python }} -m pip install -r ./requirements.txt
         make html
-        cd ..
+
+    - name: Build Python MSI
+      shell: pwsh
+      run: |
+        cd cpython
         ./Tools/msi/get_externals.bat
         ./Tools/msi/build.bat -x64
-        "python=${{ github.workspace }}/cpython/PCBuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-        "python_artifacts=${{ github.workspace }}/cpython/PCBuild/amd64" | Out-File -FilePath $env:GITHUB_ENV -Append
-        exit 1
 
     - name: Restore Qt from cache
       if: env.qt_from_cache == 'true'
