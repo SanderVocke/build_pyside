@@ -116,7 +116,7 @@ jobs:
         export PYTHON=$(cygpath -u '${{ env.python }}')
         export BLURB="$PYTHON -m blurb"
         export SPHINXBUILD="$PYTHON -m sphinxbuild"
-        cpython/Tools/msi/buildrelease/bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
+        cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
 
     - name: Upload installer
       uses: actions/upload-artifact@v4
