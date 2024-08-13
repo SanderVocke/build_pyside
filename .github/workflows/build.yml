@@ -110,12 +110,25 @@ jobs:
 
 
 
-    - name: Build Python MSI
+    - name: Build Python MSI installer
+      shell: bash
+      run: |
+        export PYTHON=$(cygpath -u '${{ env.python }}')
+        export BLURB="$PYTHON -m blurb"
+        export SPHINXBUILD="$PYTHON -m sphinxbuild"
+        cpython/Tools/msi/buildrelease/bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
+
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-installer
+        path: ${{ github.workspace }}/python-installer
+
+
+    - name: Qt install path
       shell: pwsh
       run: |
-        cd cpython
-        ./Tools/msi/get_externals.bat
-        ./Tools/msi/build.bat -x64
+         "qt_install=${{ github.workspace }}/qt-install" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Restore Qt from cache
       if: env.qt_from_cache == 'true'
