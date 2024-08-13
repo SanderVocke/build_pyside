@@ -101,7 +101,7 @@ jobs:
       if: steps.cache-python-docs.outputs.cache_hit != 'true'
       uses: actions/cache/save@v4
       with:
-        path: cpython/Docs/build
+        path: cpython/Doc/build
         key: ${{ runner.os }}-python-docs
 
 
