@@ -56,7 +56,7 @@ jobs:
       run: |
         cd cpython/Doc
         ${{ env.python }} -m pip install -r ./requirements.txt
-        make PYTHON=${{ env.python }} html
+        make PYTHON=${{ env.python }} BLURB="${{ env.python }} -m blurb" SPHINXBUILD="${{ env.python }} -m sphinx-build" html
 
     - name: Build Python MSI
       shell: pwsh
