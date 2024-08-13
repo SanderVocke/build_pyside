@@ -14,6 +14,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   CMAKE_CXX_COMPILER_LAUNCHER: sccache
   CMAKE_C_COMPILER_LAUNCHER: sccache
+  qt_from_cache: "true"
 
 jobs:
   build:
@@ -55,7 +56,16 @@ jobs:
         "python_artifacts=${{ github.workspace }}/cpython/PCBuild/amd64" | Out-File -FilePath $env:GITHUB_ENV -Append
         exit 1
 
+    - name: Restore Qt from cache
+      if: ${{ env.qt_from_cache == "true" }}
+      id: cache-qt
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ env.qt_install }}
+        key: ${{ runner.os }}-qt-install
+
     - name: Checkout Qt
+      if: steps.cache-qt.outputs.cache_hit != "true"
       shell: pwsh
       run: |
          git clone --branch 6.6.3 https://github.com/qtproject/qt5.git qt
@@ -65,15 +75,23 @@ jobs:
 
     - name: Build Qt
       shell: pwsh
+      if: steps.cache-qt.outputs.cache_hit != "true"
       run: |
          mkdir qt-build
          cd qt-build
          #$Env:CXX="sccache $Env:CXX"
          #$Env:CC="sccache $Env:CC"
-         ../qt/configure.bat -prefix ${{ github.workspace }}/qt-install -opensource -confirm-license -release -nomake examples -nomake tests
+         ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
-         "qt_install=${{ github.workspace }}/qt-install" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Save Qt cache
+      if: steps.cache-qt.outputs.cache_hit != "true"
+      id: cache-qt
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ env.qt_install }}
+        key: ${{ runner.os }}-qt-install
 
     - name: find
       shell: pwsh
