@@ -69,7 +69,7 @@ jobs:
     - name: Python binary install pip and env
       shell: pwsh
       run: |
-        ./PCbuild/amd64/python_d.exe -m ensurepip
+        ./cpython/PCbuild/amd64/python_d.exe -m ensurepip
         "python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Save Python binaries cache
