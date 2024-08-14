@@ -58,10 +58,10 @@ jobs:
         key: ${{ runner.os }}-python-binaries
 
     - name: Build Python binaries
-      if: steps.cache-python-binaries.outputs.cache_hit != 'true'
+      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
-        echo "${{ steps.cache-python-binaries.outputs.cache_hit }}"
+        echo "${{ steps.cache-python-binaries.outputs.cache-hit }}"
         cd cpython
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
@@ -70,7 +70,7 @@ jobs:
         "python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Save Python binaries cache
-      if: steps.cache-python-binaries.outputs.cache_hit != 'true'
+      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: cpython/PCbuild/amd64
@@ -90,7 +90,7 @@ jobs:
         key: ${{ runner.os }}-python-docs
 
     - name: Build Python docs
-      if: steps.cache-python-docs.outputs.cache_hit != 'true'
+      if: steps.cache-python-docs.outputs.cache-hit != 'true'
       shell: bash
       run: |
         PYTHON=$(cygpath -u '${{ env.python }}')
@@ -99,7 +99,7 @@ jobs:
         make PYTHON=$PYTHON BLURB="$PYTHON -m blurb" SPHINXBUILD="$PYTHON -m sphinx" html
 
     - name: Save Python docs cache
-      if: steps.cache-python-docs.outputs.cache_hit != 'true'
+      if: steps.cache-python-docs.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: cpython/Doc/build
@@ -140,7 +140,7 @@ jobs:
         key: ${{ runner.os }}-qt-install
 
     - name: Checkout Qt
-      if: steps.cache-qt.outputs.cache_hit != 'true'
+      if: steps.cache-qt.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
          git clone --branch 6.6.3 https://github.com/qtproject/qt5.git qt
@@ -150,7 +150,7 @@ jobs:
 
     - name: Build Qt
       shell: pwsh
-      if: steps.cache-qt.outputs.cache_hit != 'true'
+      if: steps.cache-qt.outputs.cache-hit != 'true'
       run: |
          mkdir qt-build
          cd qt-build
@@ -161,7 +161,7 @@ jobs:
          cmake --install .
 
     - name: Save Qt cache
-      if: steps.cache-qt.outputs.cache_hit != 'true'
+      if: steps.cache-qt.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: ${{ env.qt_install }}
