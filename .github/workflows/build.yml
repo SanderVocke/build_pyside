@@ -92,6 +92,7 @@ jobs:
       if: steps.cache-python-docs.outputs.cache_hit != 'true'
       shell: bash
       run: |
+        echo "${{ steps.cache-qt.outputs.cache_hit }}"
         PYTHON=$(cygpath -u '${{ env.python }}')
         cd cpython/Doc
         $PYTHON -m pip install -r ./requirements.txt
@@ -151,7 +152,6 @@ jobs:
       shell: pwsh
       if: steps.cache-qt.outputs.cache_hit != 'true'
       run: |
-         echo "${{ steps.cache-qt.outputs.cache_hit }}"
          mkdir qt-build
          cd qt-build
          #$Env:CXX="sccache $Env:CXX"
