@@ -61,6 +61,7 @@ jobs:
       if: steps.cache-python-binaries.outputs.cache_hit != 'true'
       shell: pwsh
       run: |
+        echo "${{ steps.cache-python-binaries.outputs.cache_hit }}"
         cd cpython
         $Env:CXX="sccache $Env:CXX"
         $Env:CC="sccache $Env:CC"
@@ -92,7 +93,6 @@ jobs:
       if: steps.cache-python-docs.outputs.cache_hit != 'true'
       shell: bash
       run: |
-        echo "${{ steps.cache-qt.outputs.cache_hit }}"
         PYTHON=$(cygpath -u '${{ env.python }}')
         cd cpython/Doc
         $PYTHON -m pip install -r ./requirements.txt
