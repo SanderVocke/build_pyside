@@ -151,6 +151,7 @@ jobs:
       shell: pwsh
       if: steps.cache-qt.outputs.cache_hit != 'true'
       run: |
+         echo "${{ steps.cache-qt.outputs.cache_hit }}"
          mkdir qt-build
          cd qt-build
          #$Env:CXX="sccache $Env:CXX"
