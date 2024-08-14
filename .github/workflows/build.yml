@@ -114,9 +114,9 @@ jobs:
     - name: Build Python MSI installer
       shell: bash
       run: |
-        export PYTHON=$(cygpath -u '${{ env.python }}')
-        export BLURB="$PYTHON -m blurb"
-        export SPHINXBUILD="$PYTHON -m sphinxbuild"
+        export MY_PYTHON=$(cygpath -u '${{ env.python }}')
+        export BLURB="$MY_PYTHON -m blurb"
+        export SPHINXBUILD="$MY_PYTHON -m sphinxbuild"
         cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
 
     - name: Upload installer
