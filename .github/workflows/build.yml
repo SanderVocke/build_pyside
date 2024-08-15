@@ -59,63 +59,63 @@ jobs:
 
 
 
-    - name: Restore Python binaries from cache
-      if: env.python_binaries_from_cache == 'true'
-      id: cache-python-binaries
-      uses: actions/cache/restore@v4
-      with:
-        path: cpython/PCbuild/amd64
-        key: ${{ runner.os }}-python-binaries
+    # - name: Restore Python binaries from cache
+    #   if: env.python_binaries_from_cache == 'true'
+    #   id: cache-python-binaries
+    #   uses: actions/cache/restore@v4
+    #   with:
+    #     path: cpython/PCbuild/amd64
+    #     key: ${{ runner.os }}-python-binaries
 
-    - name: Build Python binaries
-      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
-      shell: pwsh
-      run: |
-        cd cpython
-        $Env:CXX="sccache $Env:CXX"
-        $Env:CC="sccache $Env:CC"
-        ./PCbuild/build.bat -p x64 -d -e
+    # - name: Build Python binaries
+    #   if: steps.cache-python-binaries.outputs.cache-hit != 'true'
+    #   shell: pwsh
+    #   run: |
+    #     cd cpython
+    #     $Env:CXX="sccache $Env:CXX"
+    #     $Env:CC="sccache $Env:CC"
+    #     ./PCbuild/build.bat -p x64 -d -e
 
-    - name: Python binary install pip and env
-      shell: pwsh
-      run: |
-        ./cpython/PCbuild/amd64/python_d.exe -m ensurepip
-        "built_python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+    # - name: Python binary install pip and env
+    #   shell: pwsh
+    #   run: |
+    #     ./cpython/PCbuild/amd64/python_d.exe -m ensurepip
+    #     "built_python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-    - name: Save Python binaries cache
-      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
-      with:
-        path: cpython/PCbuild/amd64
-        key: ${{ runner.os }}-python-binaries
-
-
+    # - name: Save Python binaries cache
+    #   if: steps.cache-python-binaries.outputs.cache-hit != 'true'
+    #   uses: actions/cache/save@v4
+    #   with:
+    #     path: cpython/PCbuild/amd64
+    #     key: ${{ runner.os }}-python-binaries
 
 
 
 
-    - name: Restore Python docs from cache
-      if: env.python_docs_from_cache == 'true'
-      id: cache-python-docs
-      uses: actions/cache/restore@v4
-      with:
-        path: cpython/Docs/build
-        key: ${{ runner.os }}-py-docs
 
-    - name: Build Python docs
-      if: steps.cache-python-docs.outputs.cache-hit != 'true'
-      shell: bash
-      run: |
-        cd cpython/Doc
-        ${{ env.bootstrap_python }} -m pip install -r ./requirements.txt
-        make PYTHON=${{ env.bootstrap_python }} BLURB="${{ env.bootstrap_python }} -m blurb" SPHINXBUILD="${{ env.bootstrap_python }} -m sphinx" html
 
-    - name: Save Python docs cache
-      if: steps.cache-python-docs.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
-      with:
-        path: cpython/Doc/build
-        key: ${{ runner.os }}-py-docs
+    # - name: Restore Python docs from cache
+    #   if: env.python_docs_from_cache == 'true'
+    #   id: cache-python-docs
+    #   uses: actions/cache/restore@v4
+    #   with:
+    #     path: cpython/Docs/build
+    #     key: ${{ runner.os }}-py-docs
+
+    # - name: Build Python docs
+    #   if: steps.cache-python-docs.outputs.cache-hit != 'true'
+    #   shell: bash
+    #   run: |
+    #     cd cpython/Doc
+    #     ${{ env.bootstrap_python }} -m pip install -r ./requirements.txt
+    #     make PYTHON=${{ env.bootstrap_python }} BLURB="${{ env.bootstrap_python }} -m blurb" SPHINXBUILD="${{ env.bootstrap_python }} -m sphinx" html
+
+    # - name: Save Python docs cache
+    #   if: steps.cache-python-docs.outputs.cache-hit != 'true'
+    #   uses: actions/cache/save@v4
+    #   with:
+    #     path: cpython/Doc/build
+    #     key: ${{ runner.os }}-py-docs
 
 
 
@@ -129,13 +129,24 @@ jobs:
         cpython/Tools/msi/build.bat -x64 --pack
         mkdir -p $(cygpath -u "${{ github.workspace }}/python-installer")
         cp -r cpython/PCbuild/amd64/* $(cygpath -u "${{ github.workspace }}/python-installer")
-        # cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
+        INSTALLER=$(find $(pwd) -type f -name "py*.exe")
+        echo "python_installer=$(cygpath -w $INSTALLER)" >> $GITHUB_ENV
 
     - name: Upload installer
       uses: actions/upload-artifact@v4
       with:
         name: python-installer
-        path: ${{ github.workspace }}/python-installer
+        path: ${{ github.workspace }}/python-installer/en-us
+
+    - name: Install built Python
+      shell: pwsh
+      run: |
+        $install_dir="=${{ github.workspace }}/../python-installed"
+        "python_installed_folder=$install_dir" | Out-File -FilePath $env:GITHUB_ENV -Append
+        "python_installed=$install_dir/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+        ${{ env.python_installer }} /quiet TargetDir=$install_dir AssociateFiles=0 Include_Debug=1 Include_symbols=1
+
+
 
 
     - name: Qt install path
@@ -179,11 +190,6 @@ jobs:
         path: ${{ env.qt_install }}
         key: ${{ runner.os }}-qt-install
 
-    - name: find
-      shell: pwsh
-      run: |
-         Get-ChildItem -Path . -Filter "qtpaths.exe" -Recurse
-
     - name: Install Libclang from Qt
       shell: pwsh
       run: |
@@ -202,7 +208,7 @@ jobs:
     - name: Pyside venv
       shell: pwsh
       run: |
-          ${{ env.built_python }} -m venv pyside_venv
+          ${{ env.python_installed }} -m venv pyside_venv
           "python_in_venv=${{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
 
