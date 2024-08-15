@@ -106,7 +106,8 @@ jobs:
         $install_dir="${{ github.workspace }}/../python-installed"
         "python_installed_folder=$install_dir" | Out-File -FilePath $env:GITHUB_ENV -Append
         "python_installed=$install_dir/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-        & ${{ env.python_installer }} /quiet TargetDir=$install_dir AssociateFiles=0 Include_Debug=1 Include_symbols=1
+        & ${{ env.python_installer }} /quiet TargetDir=$install_dir AssociateFiles=0 Include_Debug=1 Include_symbols=1 /log install_log.txt
+        cat install_log.txt
 
 
 
