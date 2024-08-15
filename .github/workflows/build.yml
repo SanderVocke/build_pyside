@@ -107,8 +107,8 @@ jobs:
       shell: bash
       run: |
         cd cpython/Doc
-        python -m pip install -r ./requirements.txt
-        make PYTHON=$PYTHON BLURB="$PYTHON -m blurb" SPHINXBUILD="$PYTHON -m sphinx" html
+        ${{ env.bootstrap_python }} -m pip install -r ./requirements.txt
+        make PYTHON=${{ env.bootstrap_python }} BLURB="${{ env.bootstrap_python }} -m blurb" SPHINXBUILD="${{ env.bootstrap_python }} -m sphinx" html
 
     - name: Save Python docs cache
       if: steps.cache-python-docs.outputs.cache-hit != 'true'
