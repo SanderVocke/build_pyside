@@ -170,7 +170,8 @@ jobs:
     - name: Pyside venv
       shell: pwsh
       run: |
-          ${{ env.python_installed }} -m venv pyside_venv
+          ls ${{ env.python_installed_folder }}
+          & "${{ env.python_installed }}" -m venv pyside_venv
           "python_in_venv=${{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
 
@@ -178,8 +179,8 @@ jobs:
       shell: pwsh
       run: |
           cd pyside
-          ${{ env.python_in_venv }} -m pip install -r requirements.txt
-          ${{ env.python_in_venv }} setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4
+          & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
+          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4
 
     # - name: Setup tmate session
     #   if: failure()
