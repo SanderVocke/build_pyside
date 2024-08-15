@@ -38,6 +38,16 @@ jobs:
     - name: Install WiX
       run: dotnet tool install --global wix
 
+    - name: Bootstrap Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12' 
+    - name: Bootstrap Python env
+      shell: pwsh
+      run: |
+         "bootstrap_python=python" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+
     - name: Checkout Python
       shell: pwsh
       run: |
@@ -70,7 +80,7 @@ jobs:
       shell: pwsh
       run: |
         ./cpython/PCbuild/amd64/python_d.exe -m ensurepip
-        "python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+        "built_python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Save Python binaries cache
       if: steps.cache-python-binaries.outputs.cache-hit != 'true'
@@ -90,15 +100,14 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: cpython/Docs/build
-        key: ${{ runner.os }}-python-docs
+        key: ${{ runner.os }}-py-docs
 
     - name: Build Python docs
       if: steps.cache-python-docs.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        PYTHON=$(cygpath -u '${{ env.python }}')
         cd cpython/Doc
-        $PYTHON -m pip install -r ./requirements.txt
+        python -m pip install -r ./requirements.txt
         make PYTHON=$PYTHON BLURB="$PYTHON -m blurb" SPHINXBUILD="$PYTHON -m sphinx" html
 
     - name: Save Python docs cache
@@ -106,7 +115,7 @@ jobs:
       uses: actions/cache/save@v4
       with:
         path: cpython/Doc/build
-        key: ${{ runner.os }}-python-docs
+        key: ${{ runner.os }}-py-docs
 
 
 
@@ -117,9 +126,6 @@ jobs:
     - name: Build Python MSI installer
       shell: bash
       run: |
-        export MY_PYTHON=$(cygpath -u '${{ env.python }}')
-        export BLURB="$MY_PYTHON -m blurb"
-        export SPHINXBUILD="$MY_PYTHON -m sphinxbuild"
         cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
 
     - name: Upload installer
@@ -193,7 +199,7 @@ jobs:
     - name: Pyside venv
       shell: pwsh
       run: |
-          ${{ env.python }} -m venv pyside_venv
+          ${{ env.built_python }} -m venv pyside_venv
           "python_in_venv=${{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
 
