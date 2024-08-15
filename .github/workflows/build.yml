@@ -41,7 +41,7 @@ jobs:
     - name: Bootstrap Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12' 
+        python-version: '3.12'
     - name: Bootstrap Python env
       shell: pwsh
       run: |
@@ -126,7 +126,10 @@ jobs:
     - name: Build Python MSI installer
       shell: bash
       run: |
-        cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
+        cpython/Tools/msi/build.bat -x64 --pack
+        mkdir -p $(cygpath -u "${{ github.workspace }}/python-installer")
+        cp -r cpython/PCbuild/amd64/* $(cygpath -u "${{ github.workspace }}/python-installer")
+        # cpython/Tools/msi/buildrelease.bat -x64 -D -B -o $(cygpath -u "${{ github.workspace }}/python-installer")
 
     - name: Upload installer
       uses: actions/upload-artifact@v4
