@@ -15,9 +15,6 @@ env:
   CMAKE_CXX_COMPILER_LAUNCHER: sccache
   CMAKE_C_COMPILER_LAUNCHER: sccache
   qt_from_cache: "true"
-  python_binaries_from_cache: "true"
-  python_docs_from_cache: "true"
-  python_installer_from_cache: "true"
 
 jobs:
   build:
@@ -57,19 +54,7 @@ jobs:
 
 
 
-
-
-
-    - name: Restore Python binaries from cache
-      if: env.python_binaries_from_cache == 'true'
-      id: cache-python-binaries
-      uses: actions/cache/restore@v4
-      with:
-        path: cpython/PCbuild/amd64
-        key: ${{ runner.os }}-python-binaries
-
     - name: Build Python binaries
-      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
         cd cpython
@@ -83,28 +68,9 @@ jobs:
         ./cpython/PCbuild/amd64/python_d.exe -m ensurepip
         "built_python=${{ github.workspace }}/cpython/PCbuild/amd64/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-    - name: Save Python binaries cache
-      if: steps.cache-python-binaries.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
-      with:
-        path: cpython/PCbuild/amd64
-        key: ${{ runner.os }}-python-binaries
 
-
-
-
-
-
-    - name: Cache Python docs
-      if: env.python_docs_from_cache == 'true'
-      id: cache-python-docs
-      uses: actions/cache@v4
-      with:
-        path: cpython/Docs/build
-        key: ${{ runner.os }}-py-docs
 
     - name: Build Python docs
-      if: steps.cache-python-docs.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cd cpython/Doc
@@ -114,16 +80,7 @@ jobs:
 
 
 
-    - name: Cache Python MSI installer
-      if: env.python_installer_from_cache == 'true'
-      id: cache-python-msi
-      uses: actions/cache@v4
-      with:
-        path: ${{ github.workspace }}/python-installer
-        key: ${{ runner.os }}-py-msi
-
     - name: Build Python MSI installer
-      if: steps.cache-python-msi.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cpython/Tools/msi/build.bat -x64 --pack
@@ -135,7 +92,7 @@ jobs:
       run: |
         cd $(cygpath -u '${{ github.workspace }}/python-installer')
         INSTALLER=$(find $(pwd) -type f -name "py*.exe")
-        echo "python_installer=$(cygpath -w $INSTALLER)" >> $GITHUB_ENV
+        echo "python_installer=\"$(cygpath -w $INSTALLER)\"" | tee -a $GITHUB_ENV
 
     - name: Upload installer
       uses: actions/upload-artifact@v4
