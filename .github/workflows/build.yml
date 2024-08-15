@@ -17,6 +17,7 @@ env:
   qt_from_cache: "true"
   python_binaries_from_cache: "true"
   python_docs_from_cache: "true"
+  python_installer_from_cache: "true"
 
 jobs:
   build:
@@ -113,14 +114,26 @@ jobs:
 
 
 
-
+    - name: Cache Python MSI installer
+      if: env.python_installer_from_cache == 'true'
+      id: cache-python-msi
+      uses: actions/cache@v4
+      with:
+        path: ${{ github.workspace }}/python-installer
+        key: ${{ runner.os }}-py-msi
 
     - name: Build Python MSI installer
+      if: steps.cache-python-msi.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cpython/Tools/msi/build.bat -x64 --pack
-        mkdir -p $(cygpath -u "${{ github.workspace }}/python-installer")
-        cp -r cpython/PCbuild/amd64/* $(cygpath -u "${{ github.workspace }}/python-installer")
+        mkdir -p $(cygpath -u '${{ github.workspace }}/python-installer')
+        cp -r cpython/PCbuild/amd64/* $(cygpath -u '${{ github.workspace }}/python-installer')
+
+    - name: MSI env settings
+      shell: bash
+      run: |
+        cd $(cygpath -u '${{ github.workspace }}/python-installer')
         INSTALLER=$(find $(pwd) -type f -name "py*.exe")
         echo "python_installer=$(cygpath -w $INSTALLER)" >> $GITHUB_ENV
 
@@ -128,7 +141,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: python-installer
-        path: ${{ github.workspace }}/python-installer/en-us
+        path: ${{ env.python_installer }}
 
     - name: Install built Python
       shell: pwsh
@@ -211,9 +224,9 @@ jobs:
           ${{ env.python_in_venv }} -m pip install -r requirements.txt
           ${{ env.python_in_venv }} setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4
 
-    - name: Setup tmate session
-      if: failure()
-      uses: SanderVocke/action-tmate@master
+    # - name: Setup tmate session
+    #   if: failure()
+    #   uses: SanderVocke/action-tmate@master
 
     # - name: Archive DLL
     #   uses: actions/upload-artifact@v4
