@@ -91,7 +91,7 @@ jobs:
       shell: bash
       run: |
         cd $(cygpath -u '${{ github.workspace }}/python-installer')
-        INSTALLER=$(find $(pwd)/cpython/PCbuild/amd64/en-us -type f -name "py*.exe" | head -n1)
+        INSTALLER=$(find $(pwd)/en-us -type f -name "py*.exe" | head -n1)
         echo "python_installer=\"$(cygpath -w $INSTALLER)\"" | tee -a $GITHUB_ENV
 
     - name: Upload installer
