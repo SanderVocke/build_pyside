@@ -179,12 +179,18 @@ jobs:
           "python_in_venv=${{ github.workspace }}/pyside_venv/Scripts/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 
 
+    - name: Set up Clang
+      uses: egor-tensin/setup-clang@v1
+      with:
+        version: latest
+        platform: x64
+
     - name: Build PySide
       shell: pwsh
       run: |
           cd pyside
           & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
-          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4
+          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4 --debug
 
     - name: Setup tmate session
       if: failure()
