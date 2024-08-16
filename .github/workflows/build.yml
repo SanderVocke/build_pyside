@@ -160,8 +160,9 @@ jobs:
       run: |
          curl -L https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_18.1.7-based-windows-vs2019_64.7z --output libclang.7z
          7z x libclang.7z -olibclang
-         "LLVM_INSTALL_DIR=${{ github.workspace }}/libclang" | Out-File -FilePath $env:GITHUB_ENV -Append
-         "${{ github.workspace }}/libclang/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+         "LLVM_INSTALL_DIR=${{ github.workspace }}/libclang/libclang" | Out-File -FilePath $env:GITHUB_ENV -Append
+         "CMAKE_PREFIX_PATH=${{ github.workspace }}/libclang/libclang/lib/cmake" | Out-File -FilePath $env:GITHUB_ENV -Append
+         "${{ github.workspace }}/libclang/libclang/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
     - name: Checkout PySide
       shell: pwsh
