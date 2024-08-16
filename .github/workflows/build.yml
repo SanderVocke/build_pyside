@@ -103,10 +103,12 @@ jobs:
     - name: Install built Python
       shell: pwsh
       run: |
-        $install_dir="${{ github.workspace }}/../python-installed"
+        $install_dir="${{ github.workspace }}\\python_installed"
+        echo "Install dir: $install_dir"
         "python_installed_folder=$install_dir" | Out-File -FilePath $env:GITHUB_ENV -Append
         "python_installed=$install_dir/python_d.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-        & ${{ env.python_installer }} /quiet TargetDir=$install_dir AssociateFiles=0 Include_Debug=1 Include_symbols=1 /log install_log.txt
+        & ${{ env.python_installer }} /quiet TargetDir=$install_dir AssociateFiles=0 Include_Debug=1 Include_symbols=1 Shortcuts=0 Include_launcher=0 /log install_log.txt
+        Start-Sleep 10.0
         cat install_log.txt
 
 
