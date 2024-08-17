@@ -26,6 +26,11 @@ jobs:
       with:
         submodules: true
 
+    - name: Setup tmate session
+      uses: SanderVocke/action-tmate@master
+      with:
+        detached: true
+    
     - uses: TheMrMilchmann/setup-msvc-dev@v3
       with:
         arch: x64
@@ -209,9 +214,9 @@ jobs:
         name: srctest
         path: D:\a\build_pyside\build_pyside\pyside\sources\pyside6\libpyside\signalmanager.cpp
 
-    - name: Setup tmate session
-      if: failure()
-      uses: SanderVocke/action-tmate@master
+    # - name: Setup tmate session
+    #   if: failure()
+    #   uses: SanderVocke/action-tmate@master
 
     # - name: Archive DLL
     #   uses: actions/upload-artifact@v4
