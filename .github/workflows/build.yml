@@ -196,7 +196,7 @@ jobs:
       run: |
           cd pyside
           & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
-          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4 --debug --verbose-build
+          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths.exe" --ignore-git --parallel=4 --debug --verbose-build --standalone
 
     - name: Archive signalmanager
       if: failure()
@@ -205,9 +205,9 @@ jobs:
         name: srctest
         path: D:\a\build_pyside\build_pyside\pyside\sources\pyside6\libpyside\signalmanager.cpp
 
-    # - name: Setup tmate session
-    #   if: failure()
-    #   uses: SanderVocke/action-tmate@master
+    - name: Setup tmate session
+      if: failure()
+      uses: SanderVocke/action-tmate@master
 
     # - name: Archive DLL
     #   uses: actions/upload-artifact@v4
