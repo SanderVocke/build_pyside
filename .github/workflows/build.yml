@@ -193,6 +193,10 @@ jobs:
 
     - name: Build PySide
       shell: pwsh
+      env:
+        SCCACHE_GHA_ENABLED: false
+        CMAKE_CXX_COMPILER_LAUNCHER: ""
+        CMAKE_C_COMPILER_LAUNCHER: ""
       run: |
           cd pyside
           & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
