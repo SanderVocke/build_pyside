@@ -205,8 +205,13 @@ jobs:
       run: |
           cd pyside
           & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
-          # & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --debug --verbose-build --standalone
-          & "${{ env.python_in_venv }}" setup.py build --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
+
+          # Shiboken
+          & "${{ env.python_in_venv }}" setup.py build --build-type=shiboken6 --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
+          & "${{ env.python_in_venv }}" setup.py build --build-type=shiboken6-generator --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
+
+          # PySide
+          & "${{ env.python_in_venv }}" setup.py build --build-type=pyside6 --debug --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
 
 
  
