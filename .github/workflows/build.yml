@@ -96,7 +96,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         C:\Strawberry\c\bin\perl init-repository --module-subset=essential
+         & "C:\Strawberry\c\bin\perl.exe" init-repository --module-subset=essential
 
     - name: Build Qt
       shell: pwsh
