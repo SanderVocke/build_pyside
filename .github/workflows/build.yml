@@ -242,6 +242,8 @@ jobs:
           python setup.py install --build-type=shiboken6 --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build --unity
           python setup.py install --build-type=shiboken6-generator --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build --unity
 
+          "CMAKE_PREFIX_PATH=$Env:CMAKE_PREFIX_PATH;${{ github.workspace }}/pyside/build/pyside_venv/install/lib/cmake/Shiboken6" | Out-File -FilePath $env:GITHUB_ENV -Append
+
     - name: Build PySide
       shell: pwsh
       env:
