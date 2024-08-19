@@ -30,8 +30,6 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   CMAKE_CXX_COMPILER_LAUNCHER: sccache
   CMAKE_C_COMPILER_LAUNCHER: sccache
-  CMAKE_CXX_COMPILER: cl.exe
-  CMAKE_C_COMPILER: cl.exe
   qt_from_cache: "true"
 
 jobs:
@@ -47,9 +45,10 @@ jobs:
     - name: Install WiX
       run: dotnet tool install --global wix
 
-    - uses: shogo82148/actions-setup-perl@v1
-      with:
-        perl-version: "5.38"
+    # - uses: shogo82148/actions-setup-perl@v1
+    #   with:
+    #     perl-version: "5.38"
+
 
     - name: Bootstrap Python
       uses: actions/setup-python@v5
@@ -97,7 +96,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         perl init-repository --module-subset=essential
+         C:\Strawberry\c\bin\perl init-repository --module-subset=essential
 
     - name: Build Qt
       shell: pwsh
