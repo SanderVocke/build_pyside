@@ -30,6 +30,8 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   CMAKE_CXX_COMPILER_LAUNCHER: sccache
   CMAKE_C_COMPILER_LAUNCHER: sccache
+  CMAKE_CXX_COMPILER: cl.exe
+  CMAKE_C_COMPILER: cl.exe
   qt_from_cache: "true"
 
 jobs:
