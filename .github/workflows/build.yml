@@ -55,9 +55,11 @@ jobs:
         python-version: '3.12'
 
 
-    - uses: TheMrMilchmann/setup-msvc-dev@v3
-      with:
-        arch: x64
+    # - uses: TheMrMilchmann/setup-msvc-dev@v3
+    #   with:
+    #     arch: x64
+
+    - uses: ilammy/msvc-dev-cmd@v1
 
     - name: Run sccache-cache
       uses: mozilla-actions/sccache-action@v0.0.5
@@ -217,7 +219,7 @@ jobs:
       uses: SanderVocke/action-tmate@master
       with:
         detached: true
-      
+
     # - name: Build Shiboken + PySide
     #   shell: pwsh
     #   env:
