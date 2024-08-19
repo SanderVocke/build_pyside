@@ -95,18 +95,15 @@ jobs:
          cd qt
          perl init-repository --module-subset=essential
 
-    - name: Build Qt
+    - name: Build Qt (TODO release)
       shell: pwsh
       if: steps.cache-qt.outputs.cache-hit != 'true'
-      env:
-         CMAKE_C_FLAGS: "/FS"
-         CMAKE_CXX_FLAGS: "/FS"
       run: |
          mkdir qt-build
          cd qt-build
          #$Env:CXX="sccache $Env:CXX"
          #$Env:CC="sccache $Env:CC"
-         ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -debug -nomake examples -nomake tests
+         ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -release -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
 
