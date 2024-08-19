@@ -52,6 +52,10 @@ jobs:
     - name: Install WiX
       run: dotnet tool install --global wix
 
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: "5.38"
+
     - name: Bootstrap Python
       uses: actions/setup-python@v5
       with:
@@ -149,8 +153,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         git submodule init --recursive qtbase qtdeclarative qttools qtrepotools qttranslations qtdoc qtqa
-         git submodule update
+         Perl init-repository --module-subset=qtbase,qtdeclarative,qttools,qtrepotools,qttranslations,qtdoc,qtqa
 
     - name: Build Qt
       shell: pwsh
