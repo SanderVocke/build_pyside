@@ -65,7 +65,7 @@ jobs:
     - name: Checkout Python
       shell: pwsh
       run: |
-         git clone --branch ${{ inputs.cpython_tag }} https://github.com/python/cpython.git
+         git clone --branch ${{ inputs.cpython_tag || 'v3.12.5' }} https://github.com/python/cpython.git
 
 
 
@@ -141,13 +141,13 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.qt_install }}
-        key: ${{ runner.os }}-qt-install-${{ inputs.qt_tag }}
+        key: ${{ runner.os }}-qt-install-${{ inputs.qt_tag || '6.6.3' }}
 
     - name: Checkout Qt
       if: steps.cache-qt.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
-         git clone --branch ${{ inputs.qt_tag }} https://github.com/qtproject/qt5.git qt
+         git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
          git submodule init qtbase qtdeclarative
          git submodule update
@@ -183,7 +183,7 @@ jobs:
     - name: Checkout PySide
       shell: pwsh
       run: |
-          git clone --branch ${{ inputs.pyside_tag }} https://code.qt.io/pyside/pyside-setup.git pyside
+          git clone --branch ${{ inputs.pyside_tag || '6.6.3.1' }} https://code.qt.io/pyside/pyside-setup.git pyside
           cd pyside
           git submodule update --init --recursive
 
