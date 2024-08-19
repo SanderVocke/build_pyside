@@ -256,7 +256,7 @@ jobs:
           python -m pip install -r requirements.txt
 
           # PySide (Debug)
-          python setup.py install --build-type=pyside6 --debug --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build --unity
+          python setup.py install --build-type=all --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build --unity
 
     - name: Archive signalmanager
       if: failure()
