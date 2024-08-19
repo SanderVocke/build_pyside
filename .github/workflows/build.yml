@@ -71,10 +71,7 @@ jobs:
          "bootstrap_python=python" | Out-File -FilePath $env:GITHUB_ENV -Append
 
 
-    - name: Checkout Python
-      shell: pwsh
-      run: |
-         git clone --branch ${{ inputs.cpython_tag || 'v3.12.5' }} https://github.com/python/cpython.git
+
 
 
     - name: Qt install path
@@ -96,7 +93,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         & "C:\Strawberry\c\bin\perl.exe" init-repository --module-subset=essential
+         perl init-repository --module-subset=essential
 
     - name: Build Qt
       shell: pwsh
@@ -130,6 +127,10 @@ jobs:
 
 
 
+    - name: Checkout Python
+      shell: pwsh
+      run: |
+         git clone --branch ${{ inputs.cpython_tag || 'v3.12.5' }} https://github.com/python/cpython.git
 
     - name: Build Python binaries
       shell: pwsh
@@ -276,9 +277,9 @@ jobs:
         name: srctest
         path: D:\a\build_pyside\build_pyside\pyside\sources\pyside6\libpyside\signalmanager.cpp
 
-    # - name: Setup tmate session
-    #   if: failure()
-    #   uses: SanderVocke/action-tmate@master
+    - name: Setup tmate session
+      if: failure()
+      uses: SanderVocke/action-tmate@master
 
     # - name: Archive DLL
     #   uses: actions/upload-artifact@v4
