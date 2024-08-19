@@ -149,7 +149,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         git submodule init qtbase qtdeclarative qttools qtrepotools qttranslations qtdoc qtqa
+         git submodule init --recursive qtbase qtdeclarative qttools qtrepotools qttranslations qtdoc qtqa
          git submodule update
 
     - name: Build Qt
