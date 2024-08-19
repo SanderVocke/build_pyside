@@ -207,7 +207,7 @@ jobs:
           & "${{ env.python_in_venv }}" -m pip install -r requirements.txt
 
           # All
-          & "${{ env.python_in_venv }}" setup.py build --build-type=all --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
+          & "${{ env.python_in_venv }}" setup.py build --build-type=all --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build --unity
 
           # Shiboken
           # & "${{ env.python_in_venv }}" setup.py build --build-type=shiboken6 --qtpaths="${{ env.qt_install }}/bin/qtpaths6.exe" --ignore-git --parallel=4 --verbose-build
