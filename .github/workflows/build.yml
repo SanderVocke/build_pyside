@@ -153,7 +153,7 @@ jobs:
       run: |
          git clone --branch ${{ inputs.qt_tag || '6.6.3' }} https://github.com/qtproject/qt5.git qt
          cd qt
-         Perl init-repository --module-subset=qtbase,qtdeclarative,qttools,qtrepotools,qttranslations,qtdoc,qtqa
+         perl init-repository --module-subset=essential
 
     - name: Build Qt
       shell: pwsh
