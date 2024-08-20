@@ -27,9 +27,9 @@ permissions:
   contents: read
 
 env:
-  SCCACHE_GHA_ENABLED: "true"
-  CMAKE_CXX_COMPILER_LAUNCHER: sccache
-  CMAKE_C_COMPILER_LAUNCHER: sccache
+  # SCCACHE_GHA_ENABLED: "true"
+  # CMAKE_CXX_COMPILER_LAUNCHER: sccache
+  # CMAKE_C_COMPILER_LAUNCHER: sccache
   qt_from_cache: "true"
 
 jobs:
@@ -62,8 +62,8 @@ jobs:
 
     - uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.5
+    # - name: Run sccache-cache
+    #   uses: mozilla-actions/sccache-action@v0.0.5
 
     - name: Bootstrap Python env
       shell: pwsh
@@ -135,8 +135,8 @@ jobs:
       shell: pwsh
       run: |
         cd cpython
-        $Env:CXX="sccache $Env:CXX"
-        $Env:CC="sccache $Env:CC"
+        # $Env:CXX="sccache $Env:CXX"
+        # $Env:CC="sccache $Env:CC"
         ./PCbuild/build.bat -p x64 -d -e
 
     - name: Python binary install pip and env
@@ -240,10 +240,10 @@ jobs:
 
     - name: Build Shiboken
       shell: pwsh
-      env:
-        SCCACHE_GHA_ENABLED: false
-        CMAKE_CXX_COMPILER_LAUNCHER: ""
-        CMAKE_C_COMPILER_LAUNCHER: ""
+      # env:
+      #   SCCACHE_GHA_ENABLED: false
+      #   CMAKE_CXX_COMPILER_LAUNCHER: ""
+      #   CMAKE_C_COMPILER_LAUNCHER: ""
       run: |
           cd pyside
           ${{ env.venv }}/Scripts/Activate.ps1
@@ -257,10 +257,10 @@ jobs:
 
     - name: Build PySide
       shell: pwsh
-      env:
-        SCCACHE_GHA_ENABLED: false
-        CMAKE_CXX_COMPILER_LAUNCHER: ""
-        CMAKE_C_COMPILER_LAUNCHER: ""
+      # env:
+      #   SCCACHE_GHA_ENABLED: false
+      #   CMAKE_CXX_COMPILER_LAUNCHER: ""
+      #   CMAKE_C_COMPILER_LAUNCHER: ""
       run: |
           cd pyside
           ${{ env.venv }}/Scripts/Activate.ps1
