@@ -101,7 +101,7 @@ jobs:
       run: |
          mkdir qt-build
          cd qt-build
-         $Env:CL=$Env:CL /FS
+         $Env:CL="$Env:CL /FS"
          ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -debug -nomake examples -nomake tests
          cmake --build . --parallel
          cmake --install .
