@@ -85,7 +85,7 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.qt_install }}
-        key: ${{ runner.os }}-qt-install-${{ inputs.qt_tag || '6.6.3' }}-1
+        key: ${{ runner.os }}-qt-install-${{ inputs.qt_tag || '6.6.3' }}-2
 
     - name: Checkout Qt
       if: steps.cache-qt.outputs.cache-hit != 'true'
@@ -95,7 +95,7 @@ jobs:
          cd qt
          perl init-repository --module-subset=essential
 
-    - name: Build Qt (TODO release)
+    - name: Build Qt
       shell: pwsh
       if: steps.cache-qt.outputs.cache-hit != 'true'
       run: |
@@ -103,7 +103,7 @@ jobs:
          cd qt-build
          #$Env:CXX="sccache $Env:CXX"
          #$Env:CC="sccache $Env:CC"
-         ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -release -nomake examples -nomake tests
+         ../qt/configure.bat -prefix ${{ env.qt_install }} -opensource -confirm-license -debug -nomake examples -nomake tests -- -DCMAKE_CXX_FLAGS="/FS" -DCMAKE_C_FLAGS="/FS"
          cmake --build . --parallel
          cmake --install .
 
